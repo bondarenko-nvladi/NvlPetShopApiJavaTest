@@ -22,21 +22,21 @@ public class TestPet {
     @Severity(SeverityLevel.CRITICAL)
     @Owner("natalya bondarenko")
     public void testDeleteNonexistentPet() {
-        Response response = step("Отправить DELETE запрос на удаление несуществующего питомца",() ->
+        Response response = step("Отправить DELETE запрос на удаление несуществующего питомца", () ->
                 given()
-                .contentType(ContentType.JSON)
-                .headers("Accept", "application/json")
-                .when()
-                .delete(BASE_URL + "/pet/9999"));
+                        .contentType(ContentType.JSON)
+                        .headers("Accept", "application/json")
+                        .when()
+                        .delete(BASE_URL + "/pet/9999"));
 
         String responseBody = response.getBody().asString();
 
-        step("Проверить, что статус-код ответа ==200",() ->
+        step("Проверить, что статус-код ответа ==200", () ->
                 assertEquals(200, response.getStatusCode(),
-        "Код ответа не совпал с ожидаемым. Ответ: " + responseBody)
+                        "Код ответа не совпал с ожидаемым. Ответ: " + responseBody)
         );
 
-        step("Проверить, что текст ответа 'models.Pet deleted'",() ->
+        step("Проверить, что текст ответа 'models.Pet deleted'", () ->
                 assertEquals(200, response.getStatusCode(),
                         "Код ответа не совпал с ожидаемым. Ответ: " + responseBody)
         );
@@ -52,7 +52,7 @@ public class TestPet {
         pet.setName("Non-existent Pet");
         pet.setStatus("available");
 
-        Response response = step("Отправить PUT запрос на обновление несуществующего питомца",() ->
+        Response response = step("Отправить PUT запрос на обновление несуществующего питомца", () ->
                 given()
                         .contentType(ContentType.JSON)
                         .headers("Accept", "application/json")
@@ -62,12 +62,38 @@ public class TestPet {
 
         String responseBody = response.getBody().asString();
 
-        step("Проверить, что статус-код ответа ==404",() ->
+        step("Проверить, что статус-код ответа ==404", () ->
                 assertEquals(404, response.getStatusCode(),
                         "Код ответа не совпал с ожидаемым. Ответ: " + responseBody)
         );
 
-        step("Проверить, что текст ответа 'Pet not found'",() ->
+        step("Проверить, что текст ответа 'Pet not found'", () ->
+                assertEquals("Pet not found", responseBody,
+                        "Код ответа не совпал с ожидаемым. Получен: " + responseBody)
+        );
+    }
+
+
+    @Test
+    @Feature("Pet")
+    @Severity(SeverityLevel.NORMAL)
+    @Owner("natalya bondarenko")
+    public void testGetNonexistentPet() {
+        Response response = step("\"Отправить GET запрос на попытку получить несуществующего питомца", () ->
+                given()
+                        .contentType(ContentType.JSON)
+                        .headers("Accept", "application/json")
+                        .when()
+                        .get(TestPet.BASE_URL + "/pet/9999"));
+
+        String responseBody = response.getBody().asString();
+
+        step("Проверить, что статус-код ответа ==404", () ->
+                assertEquals(404, response.getStatusCode(),
+                        "Код ответа не совпал с ожидаемым. Ответ: " + responseBody)
+        );
+
+        step("Проверить, что текст ответа 'Pet not found'", () ->
                 assertEquals("Pet not found", responseBody,
                         "Код ответа не совпал с ожидаемым. Получен: " + responseBody)
         );
@@ -75,30 +101,7 @@ public class TestPet {
 }
 
 
-@Test
-@Feature("Pet")
-@Severity(SeverityLevel.NORMAL)
-@Owner("natalya bondarenko")
-public void testGetNonexistentPet() {
-        Response response = step("\"Отправить GET запрос на попытку получить несуществующего питомца",() ->
-                given()
-                        .contentType(ContentType.JSON)
-                        .headers("Accept", "application/json")
-                        .when()
-                        .get(TestPet.BASE_URL + "/pet/9999"));
 
-    String responseBody = response.getBody().asString();
-
-    step("Проверить, что статус-код ответа ==404",() ->
-            assertEquals(404, response.getStatusCode(),
-                    "Код ответа не совпал с ожидаемым. Ответ: " + responseBody)
-    );
-
-    step("Проверить, что текст ответа 'Pet not found'",() ->
-            assertEquals("Pet not found", responseBody,
-                    "Код ответа не совпал с ожидаемым. Получен: " + responseBody)
-    );
-}
 
 
 
